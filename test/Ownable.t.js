@@ -2,26 +2,9 @@ const { expect } = require("chai");
 const { assert } = require("console");
 const { ethers, waffle } = require("hardhat");
 
-let number;
 let ownable;
 const [wallet, alice, bob] = waffle.provider.getWallets();
 const ZERO_ADDRESS = "0x0000000000000000000000000000000000000000";
-
-describe("Greeter", function () {
-  beforeEach(async function () {
-    const Number = await ethers.getContractFactory("Number");
-    number = await Number.deploy();
-    await number.deployed();
-  });
-  it("Number is deployed", async function () {
-    expect(number.address).to.not.equal(ZERO_ADDRESS);
-  });
-  it("Number can be set", async function () {
-    await number.setNumber(100);
-    expect(await number.getNumber()).to.equal(100);
-    expect(await number.getNumber()).to.not.equal(10);
-  });
-});
 
 describe("Ownable", function () {
   beforeEach(async function () {
