@@ -5,6 +5,7 @@ const { ethers, waffle } = require("hardhat");
 let number;
 let ownable;
 const [wallet, alice, bob] = waffle.provider.getWallets();
+const ZERO_ADDRESS = "0x0000000000000000000000000000000000000000";
 
 describe("Greeter", function () {
   beforeEach(async function () {
@@ -13,9 +14,7 @@ describe("Greeter", function () {
     await number.deployed();
   });
   it("Number is deployed", async function () {
-    expect(number.address).to.not.equal(
-      "0x0000000000000000000000000000000000000000"
-    );
+    expect(number.address).to.not.equal(ZERO_ADDRESS);
   });
   it("Number can be set", async function () {
     await number.setNumber(100);
@@ -43,11 +42,13 @@ describe("Ownable", function () {
     expect(owner).to.equal(wallet.address);
   });
 
-  it("owner can be set", async function () {
-    await ownable
-      .connect(wallet)
-      .setOwner("0x0000000000000000000000000000000000000000");
+  it("owner updated Alice", async function () {
+    await ownable.connect(wallet).setOwner(alice.address);
     const owner = await ownable.owner();
-    console.log("owner", owner, alice.address);
+    expect(owner).to.equal(alice.address);
+  });
+
+  it("Revert on zero address", async function () {
+    await expect(ownable.connect(wallet).setOwner(ZERO_ADDRESS)).to.be.reverted;
   });
 });
