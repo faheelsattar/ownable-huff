@@ -1,0 +1,64 @@
+/* Interface */
+#define function owner() view returns (address)
+#define function setOwner(address) nonpayable returns (uint256)
+
+#define macro OWNER_LOCATION() = takes(0) returns(1) {
+    0x00 // slot 0
+}
+
+#define macro ADDRESS_MASK() = takes(1) returns(1) {
+	0x000000000000000000000000ffffffffffffffffffffffffffffffffffffffff
+	and
+}
+
+
+#define macro CONSTRUCTOR() = takes(0) returns (0) {
+    caller OWNER_LOCATION() sstore //storing the caller when contract gets initialize
+}
+
+#define macro ONLY_OWNER() = takes(0) returns(0) {
+    OWNER_LOCATION() sload 
+
+    caller eq owner_verified jumpi
+    0x0 0x0 revert
+
+    owner_verified:
+}
+
+#define macro SET_OWNER() = takes(0) returns (0){
+    ONLY_OWNER()
+
+    0x0
+    0x04 calldataload
+
+    eq zero jumpi
+    0x04 calldataload OWNER_LOCATION() sstore
+    0x00 0x0 return
+    
+    zero:
+    0x0 0x0 revert
+}
+
+#define macro GET_OWNER() = takes(0) returns(0){
+    OWNER_LOCATION() sload
+    0x0 mstore
+    0x20 0x0 return
+}
+
+//match funtion signature from the calldataload first 4 bytes
+#define macro FUNCTION_SIGNATURES() = takes(0) returns(0){
+    0x0 calldataload 0xE0 shr   //extracting the function signature
+    dup1 0x13af4035 eq set_owner jumpi
+    dup1 0x8da5cb5b eq owner jumpi
+}
+
+//controller to help navigate to functions 
+#define macro MAIN() = takes(0) returns(0){ 
+    FUNCTION_SIGNATURES()
+
+    set_owner:
+        SET_OWNER()
+    
+    owner:
+        GET_OWNER()
+}
