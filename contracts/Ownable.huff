@@ -28,8 +28,8 @@
 #define macro SET_OWNER() = takes(0) returns (0){
     ONLY_OWNER()
 
-    0x0                 // [0x0] 
-    0x04 calldataload   // [newOwner, 0x0]
+    0x0
+    0x04 calldataload
 
     eq zero jumpi
     0x04 calldataload OWNER_LOCATION() sstore
