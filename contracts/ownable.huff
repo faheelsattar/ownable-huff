@@ -1,0 +1,26 @@
+#define macro OWNER_LOCATION = takes(0) returns(1){
+    0x00 // slot 0
+}
+
+#define macro OWNABLE = takes(0) returns(0){
+    caller OWNER_LOCATION() sstore //storing the caller when contract gets initialize
+}
+
+//match funtion signature from the calldataload first 4 bytes
+template<setOwner, owner>
+#define macro FUNCTION_SIGNATURES = takes(0) returns(0){
+    0x0 calldataload 0xE0 shr   //extracting the function signature
+    0x13af4035 eq <setOwner> jumpi
+    0x8da5cb5b eq <owner> jumpi
+}
+
+//controller to help navigate to functions 
+#define macro OWNABLE_MAIN = takes(0) returns(0){ 
+    FUNCTION_SIGNATURES<setOwner, owner>()
+
+    setOwner:
+        SET_OWNER()
+    
+    owner:
+        GET_OWNER()
+}
