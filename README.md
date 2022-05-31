@@ -1,14 +1,6 @@
 # <h1 align="center"> Hardhat Huff Template </h1>
 
-** Template for getting started with Huff **
-
-## Setup
-
-```sh
-git clone https://github.com/JetJadeja/huff-project-template.git
-cd huff-project-template
-npm i
-```
+** Huff based ownable contract **
 
 ### Building and Testing
 
